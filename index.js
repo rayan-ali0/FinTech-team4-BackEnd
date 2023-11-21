@@ -19,7 +19,6 @@ try{
     }
 
 
-
 sequelize.sync({force:false})
 .then(()=>{
     console.log(`Databse synchronized successfully`)
@@ -29,3 +28,4 @@ console.log(`Error synchronizing database: ${error.message}`)
 })
 
 app.use('/user', userRouter);
+
