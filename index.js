@@ -3,8 +3,11 @@ import sequelize from "./config/dbConfig.js";
 import userRouter from './Routes/UserRoutes.js'
 import express from "express";
 import dotenv from 'dotenv';
-dotenv.config();
+import cors from 'cors'
 
+dotenv.config();
+app.use(cors())
+app.use(express.json())
 const app=express();
 
 try{
@@ -14,5 +17,15 @@ try{
     } catch { 
         console.error('Error starting server')
     }
+
+
+
+sequelize.sync({force:false})
+.then(()=>{
+    console.log(`Databse synchronized successfully`)
+})
+.catch((error)=>{
+console.log(`Error synchronizing database: ${error.message}`)
+})
 
 app.use('/user', userRouter);
