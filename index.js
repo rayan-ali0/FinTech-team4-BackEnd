@@ -6,20 +6,20 @@ import dotenv from 'dotenv';
 import cors from 'cors'
 
 dotenv.config();
+
+const app=express();
 app.use(cors())
 app.use(express.json())
-const app=express();
-
 try{
     app.listen(process.env.PORT, () => { 
-        console.log(`Server is running on port ${process.env.PORT}`)
+        console.log(`Server is running on port ${process.env.DB_PORT}`)
         })
     } catch { 
         console.error('Error starting server')
     }
 
 
-sequelize.sync({force:false})
+sequelize.sync({force:false,alter:true})
 .then(()=>{
     console.log(`Databse synchronized successfully`)
 })

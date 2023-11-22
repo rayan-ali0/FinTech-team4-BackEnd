@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "fin_tech04",
-    "password": null,
+    "password": "1234567890",
     "database": "abdulaziz77",
     "host": "db4free.net",
     "dialect": "mysql"
