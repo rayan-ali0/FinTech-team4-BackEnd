@@ -29,9 +29,37 @@ export const getWalletByUser=async(req,res)=>{
     const userId=req.params
     try{
         const wallet=await Wallet.findByPk(userId);
-        return res.status(200).json(wallet)
+        if(wallet){
+            return res.status(200).json(wallet)
+        }
+        else{
+            return res.status(r00).json("Wallet not found")
+
+        }
     }
     catch(error){
         return res.status(500).json('cannot get wallet'+ error.message)
+    }
+}
+
+export const addWallet=async(req,res)=>{
+    const {userId,usdBalance,usdtBalance}=req.query
+    try{
+        const wallet=await Wallet.create({userId,usdBalance,usdtBalance});
+        return res.status(200).json(wallet)
+    }
+    catch(error){
+        return res.status(500).json('cannot create wallet'+ error.message)
+    }
+}
+
+export const editWallet=async(req,res)=>{
+    const {userId,usdBalance,usdtBalance}=req.query
+    try{
+        const wallet=await Wallet.create({userId,usdBalance,usdtBalance});
+        return res.status(200).json(wallet)
+    }
+    catch(error){
+        return res.status(500).json('cannot create wallet'+ error.message)
     }
 }

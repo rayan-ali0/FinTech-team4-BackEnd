@@ -1,7 +1,7 @@
 // User Model
 
 import { ENUM, INTEGER, STRING } from "sequelize";
-import sequelize from "../config/config.js";
+import sequelize from "../config/dbConfig.js";
 
 const User = sequelize.define('User', {
 

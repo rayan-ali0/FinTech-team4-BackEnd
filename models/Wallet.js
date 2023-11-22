@@ -22,9 +22,9 @@
 //   });
 //   return Wallet;
 // };
-import { DataTypes } from "sequelize";
+import { DataTypes} from "sequelize";
 import sequelize from "../config/dbConfig.js";
-import User from './User.js'
+// import User from './User.js'
 
 const Wallet = sequelize.define('Wallet', {
     walletId: {
@@ -42,7 +42,7 @@ const Wallet = sequelize.define('Wallet', {
     usdtBalance: {
         type: DataTypes.DECIMAL,
         allowNull: false,
-        defaultValue: 0,
+        defaultValue: 10,
         field:'usdt_balance'
     }
     // userId:{
@@ -53,12 +53,19 @@ const Wallet = sequelize.define('Wallet', {
     //     model:User,
     //     key:`idUser`
     //   }
-    // }
+    // },
+
 },{
     timestamps:true,
-    tableName:'wallets'
+    tableName:'Wallets'
 });
 
+// await sequelize.sync({alter:true}).then(() => {
+
+//     console.log('Wallet table created successfully!');
+//  }).catch((error) => {
+//     console.error('Unable to create table : ', error);
+//  });
 // Wallet.belongsTo(User, { foreignKey: 'userId' })
 
 export default Wallet

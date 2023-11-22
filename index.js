@@ -4,12 +4,14 @@ import userRouter from './Routes/UserRoutes.js'
 import express from "express";
 import dotenv from 'dotenv';
 import cors from 'cors'
+import Wallet from "./models/Wallet.js";
 
 dotenv.config();
 
 const app=express();
 app.use(cors())
 app.use(express.json())
+
 try{
     app.listen(process.env.PORT, () => { 
         console.log(`Server is running on port ${process.env.DB_PORT}`)
@@ -19,9 +21,9 @@ try{
     }
 
 
-sequelize.sync({force:false,alter:true})
+await sequelize.sync({alter:true})
 .then(()=>{
-    console.log(`Databse synchronized successfully`)
+    console.log(`Database synchronized successfully`)
 })
 .catch((error)=>{
 console.log(`Error synchronizing database: ${error.message}`)
