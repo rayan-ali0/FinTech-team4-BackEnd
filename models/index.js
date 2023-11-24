@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 // import Category from './category.js';
 // import Author from './author.js'
 import User from './user.js'
+import Transaction from "./transaction.js";
+import Notification from "./notification.js";
 dotenv.config();
 
 const sequelize = new Sequelize(
@@ -21,6 +23,8 @@ const sequelize = new Sequelize(
 // const AuthorModel = Author(sequelize, Sequelize);
 
 const UserModel = User(sequelize, Sequelize);  
+const TransactionModel = Transaction(sequelize, Sequelize);  
+const NotificationModel =Notification(sequelize,Sequelize)
 
 // const db = {
 //   sequelize,
@@ -35,6 +39,10 @@ const db = {
   sequelize,
   Sequelize,
   UserModel,
+  TransactionModel,
+  NotificationModel
+
+
 };
 
 
