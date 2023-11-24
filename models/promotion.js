@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/dbConfig.js";
-import Transaction from './transaction.js'
 
 const Promotion = sequelize.define('Promotion', {
     promotionId: {
@@ -26,11 +25,13 @@ const Promotion = sequelize.define('Promotion', {
         type:DataTypes.STRING,
         allowNull:false
     }
-});
+},{ tableName: 'Promotions' });
+// import Transaction from './transaction.js'
 
-Promotion.hasMany(Transaction, { foreignKey: 'promotionId' })
+// // Promotion.hasMany(Transaction, { foreignKey: 'promotionId' })
+// Promotion.belongsTo(Transaction, { foreignKey: 'promotionId' })
 
-
+await Promotion.sync();
 export default Promotion 
 
 

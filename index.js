@@ -4,7 +4,10 @@ import userRouter from './Routes/UserRoutes.js'
 import express from "express";
 import dotenv from 'dotenv';
 import cors from 'cors'
-import Wallet from "./models/Wallet.js";
+// import Wallet from "./models/Wallet.js";
+// import Promotion from "./models/promotion.js";
+// import Transaction from "./models/transaction.js";
+import setupAssociations from './associations.js'
 
 dotenv.config();
 

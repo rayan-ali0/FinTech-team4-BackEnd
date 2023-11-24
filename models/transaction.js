@@ -1,6 +1,5 @@
 import { Sequelize, DataTypes, ENUM } from "sequelize";
 import sequelize from "../config/dbConfig.js";
-import Promotion from "./promotion.js";
 
 
 const Transaction =sequelize.define('Transaction', {
@@ -44,15 +43,18 @@ const Transaction =sequelize.define('Transaction', {
       type:DataTypes.INTEGER,
       allowNull:true,
       references:{
-        model:Promotion,
+        model:"Promotions",
         key:`promotionId` 
       }
     }
 })
 
 // associatePromotion();
-Transaction.belongsTo(Promotion, { foreignKey: 'promotionId' })
+// Transaction.belongsTo(Promotion, { foreignKey: 'promotionId' })
+// import Promotion from "./promotion.js";
+// Transaction.hasOne(Promotion, { foreignKey: 'promotionId' })
 
+await Transaction.sync();
 
 export default Transaction;
 
