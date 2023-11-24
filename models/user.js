@@ -9,6 +9,15 @@ export default (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasOne(models.WalletModel,{
+        onUpdate:'CASCADE',
+        onDelete:'CASCADE'
+      })
+      User.hasMany(models.PromotionModel,{
+        onUpdate:'CASCADE',
+        onDelete:'CASCADE'
+      })
+      
     }
   }
   User.init({

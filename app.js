@@ -17,13 +17,14 @@ app.use(cors())
 app.use(express.json())
 
 try{
-    app.listen(process.env.PORT, () => { 
+    app.listen(process.env.DB_PORT, () => { 
         console.log(`Server is running on port ${process.env.DB_PORT}`)
         })
+
         await db.sequelize.authenticate();
         console.log('Connection has been established successfully.');
         await db.sequelize.sync({alter: true});
         console.log('Database synced!');
-    } catch { 
-        console.error('Error starting server')
+    } catch(error) { 
+        console.error(error)
     }
