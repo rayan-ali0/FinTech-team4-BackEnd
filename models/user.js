@@ -19,6 +19,15 @@ export default (sequelize, DataTypes) => {
         onDelete:'CASCADE',
         onUpdate:'CASCADE'
       })
+      User.hasOne(models.WalletModel,{
+        onUpdate:'CASCADE',
+        onDelete:'CASCADE'
+      })
+      User.hasMany(models.PromotionModel,{
+        onUpdate:'CASCADE',
+        onDelete:'CASCADE'
+      })
+      
     }
   }
   User.init({

@@ -6,6 +6,8 @@ import dotenv from 'dotenv'
 import User from './user.js'
 import Transaction from "./transaction.js";
 import Notification from "./notification.js";
+import Wallet from "./wallet.js";
+import Promotion from "./promotion.js";
 dotenv.config();
 
 const sequelize = new Sequelize(
@@ -25,6 +27,8 @@ const sequelize = new Sequelize(
 const UserModel = User(sequelize, Sequelize);  
 const TransactionModel = Transaction(sequelize, Sequelize);  
 const NotificationModel =Notification(sequelize,Sequelize)
+const WalletModel=Wallet(sequelize,Sequelize)
+const PromotionModel=Promotion(sequelize,Sequelize)
 
 // const db = {
 //   sequelize,
@@ -40,15 +44,20 @@ const db = {
   Sequelize,
   UserModel,
   TransactionModel,
-  NotificationModel
+  NotificationModel,
 
 
+  WalletModel,
+  PromotionModel
 };
 
+let iter = 0;
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
+    // console.log("");
+    // console.log(iter++);
   }
 
 });
