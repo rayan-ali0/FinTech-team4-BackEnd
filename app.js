@@ -9,7 +9,7 @@ import db from './models/index.js';
 // import Promotion from "./models/promotion.js";
 // import Transaction from "./models/transaction.js";
 // import setupAssociations from './associations.js'
-
+import {promotionRoutes} from './route/promotionRoutes.js'
 dotenv.config();
 
 const app=express();
@@ -28,3 +28,5 @@ try{
     } catch(error) { 
         console.error(error)
     }
+
+app.use('/promotion',promotionRoutes)    

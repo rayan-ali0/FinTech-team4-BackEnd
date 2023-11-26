@@ -1,8 +1,10 @@
 import Wallet from "../models/Wallet.js";
-
+import User from "../models/user.js";
 export const getAll=async(req,res)=>{
     try{
-        const wallets=await Wallet.findAll();
+        const wallets=await Wallet.find({
+            include:[User]
+        });
         return res.status(200).json(wallets)
     }
     catch(error){
@@ -13,7 +15,9 @@ export const getAll=async(req,res)=>{
 export const getWalletById=async(req,res)=>{
     const walletId=req.params.id
     try{
-        const wallet=await Wallet.findByPk(walletId);
+        const wallet=await Wallet.findByPk(walletId,{
+            include:[User]
+        });
         if(wallet){
             return res.status(200).json(wallet)
         }
@@ -29,7 +33,9 @@ export const getWalletById=async(req,res)=>{
 export const getWalletByUser=async(req,res)=>{
     const userId=req.params.id
     try{
-        const wallet=await Wallet.findByPk(userId);
+        const wallet=await Wallet.findByPk(userId,{
+            include:[User]
+        });
         if(wallet){
             return res.status(200).json(wallet)
         }

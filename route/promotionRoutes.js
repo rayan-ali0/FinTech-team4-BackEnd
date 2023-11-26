@@ -1,5 +1,5 @@
 import express from "express";
-import { promotionController } from "../Controllers/Promotion";
+import { promotionController } from "../Controllers/Promotion.js";
 
 export const promotionRoutes=express.Router()
 
@@ -19,5 +19,5 @@ promotionRoutes.delete('/delete/:id',promotionController.deletePromotion)
 promotionRoutes.put('/edit',promotionController.editPromotion)
 
 //get promotions for a user
-promotionRoutes.get('/readByUser/:od',promotionController.getPromotionsForUser)
+promotionRoutes.get('/readByUser/:id',promotionController.getPromotionsForUser)
 

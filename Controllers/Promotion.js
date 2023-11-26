@@ -1,4 +1,7 @@
-import Promotion from '../models/promotion.js'
+// import Promotion from '../models/promotion.js'
+// import User from "../models/user.js";
+import db from '../models/index.js';
+const { PromotionModel, UserModel } = db;
 
 export const promotionController = {
 
@@ -7,7 +10,7 @@ export const promotionController = {
         const perc=Number(percentage)
         const date=new Date(expDate)
         try {
-            const promotion = await Promotion.create({ description, expDate:date, percentage:perc, code })
+            const promotion = await PromotionModel.create({ description, expDate:date, percentage:perc, code })
             res.status(200).json(promotion)
         } 
         catch (error) {
@@ -17,7 +20,9 @@ export const promotionController = {
     ,
     getAllPromotions:async(req,res)=>{
         try{
-            const promotions=await Promotion.findAll()
+            const promotions=await PromotionModel.findAll({
+                include:[UserModel]
+            })
             res.status(200).json(promotions)
         }
         catch(error){
@@ -28,11 +33,13 @@ export const promotionController = {
     getPromotionsForUser:async(req,res)=>{
         const {merchantId}=req.query.id
         try{
-            const promotions=await Promotion.findAll({
+            const promotions=await PromotionModel.find({
                 where:{
                     userId:merchantId
-                }
-            })
+                },
+                include:[UserModel]
+            }
+            )
             res.status(200).json(promotions)
         }
         catch(error){
@@ -43,11 +50,13 @@ export const promotionController = {
     getPromotionbyCode:async(req,res)=>{
         const {code,merchantId}=req.query
         try{
-            const promotion=await Promotion.findOne({
+            const promotion=await PromotionModel.findOne({
                 where:{
                     code:code,
                     merchantId:merchantId
-                }
+                },
+                include:[UserModel]
+
             })
             if(promotion){
                 return  res.status(200).json(promotion)
@@ -66,7 +75,7 @@ export const promotionController = {
     deletePromotion:async(req,res)=>{
         const {promotionId}=req.params.id
         try{
-            const promotion=await Promotion.findByPk(promotionId)
+            const promotion=await PromotionModel.findByPk(promotionId)
             if(promotion){
                 await promotion.destroy()
                 return res.status(200).json('promotion deleted')
@@ -84,7 +93,7 @@ export const promotionController = {
         const perc=Number(percentage)
         const date=new Date(expDate)
         try{
-            const promotion=await Promotion.findByPk(promotionId)
+            const promotion=await PromotionModel.findByPk(promotionId)
             if(promotion){
                await promotion.update({description,expDate:date,percentage:perc,code})
                res.status(200).json(promotion)
