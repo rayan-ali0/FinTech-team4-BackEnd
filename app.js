@@ -1,20 +1,15 @@
-// import sequelize from "./config/dbConfig.js";
-// import sequelize from "./config/config.js";
-// import userRouter from './Routes/UserRoutes.js'
 import express from "express";
 import dotenv from 'dotenv';
 import cors from 'cors'
 import db from './models/index.js';
-// import Wallet from "./models/Wallet.js";
-// import Promotion from "./models/promotion.js";
-// import Transaction from "./models/transaction.js";
-// import setupAssociations from './associations.js'
 import {promotionRoutes} from './route/promotionRoutes.js'
+import {walletRoutes} from './route/walletRoutes.js'
 dotenv.config();
 
 const app=express();
 app.use(cors())
 app.use(express.json())
+    app.use(express.urlencoded({ extended: true }));
 
 try{
     app.listen(process.env.DB_PORT, () => { 
@@ -30,3 +25,4 @@ try{
     }
 
 app.use('/promotion',promotionRoutes)    
+app.use('/wallet',walletRoutes)    

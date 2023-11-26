@@ -6,11 +6,11 @@ const { PromotionModel, UserModel } = db;
 export const promotionController = {
 
     addPromotion: async (req, res) => {
-        const { description, expDate, percentage, code } = req.query
+        const {userId, description, expDate, percentage, code } = req.query
         const perc=Number(percentage)
         const date=new Date(expDate)
         try {
-            const promotion = await PromotionModel.create({ description, expDate:date, percentage:perc, code })
+            const promotion = await PromotionModel.create({UserId:userId, description:description, expDate:date, percentage:perc, code })
             res.status(200).json(promotion)
         } 
         catch (error) {
@@ -31,11 +31,11 @@ export const promotionController = {
     }
     ,
     getPromotionsForUser:async(req,res)=>{
-        const {merchantId}=req.query.id
+        const merchantId=req.params.id
         try{
-            const promotions=await PromotionModel.find({
+            const promotions=await PromotionModel.findAll({
                 where:{
-                    userId:merchantId
+                    UserId:merchantId
                 },
                 include:[UserModel]
             }
@@ -53,7 +53,7 @@ export const promotionController = {
             const promotion=await PromotionModel.findOne({
                 where:{
                     code:code,
-                    merchantId:merchantId
+                    UserId:merchantId
                 },
                 include:[UserModel]
 
@@ -73,14 +73,16 @@ export const promotionController = {
     }
     ,
     deletePromotion:async(req,res)=>{
-        const {promotionId}=req.params.id
+        const promotionId=req.params.id
         try{
             const promotion=await PromotionModel.findByPk(promotionId)
             if(promotion){
                 await promotion.destroy()
                 return res.status(200).json('promotion deleted')
+            }else{
+                return res.status(404).json('promotion not found')
+
             }
-            return res.status(404).json('promotion not found')
         }
         catch(error){
             return res.status(400).json({status:400,error:error.message})
