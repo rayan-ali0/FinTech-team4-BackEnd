@@ -6,7 +6,7 @@ const { PromotionModel, UserModel } = db;
 export const promotionController = {
 
     addPromotion: async (req, res) => {
-        const {userId, description, expDate, percentage, code } = req.query
+        const {userId, description, expDate, percentage, code } = req.body
         const perc=Number(percentage)
         const date=new Date(expDate)
         try {
@@ -19,9 +19,14 @@ export const promotionController = {
     }
     ,
     getAllPromotions:async(req,res)=>{
+        const page=req.query.page
+        const pageSize=10
+        const offset=(page-1)*pageSize
         try{
             const promotions=await PromotionModel.findAll({
-                include:[UserModel]
+                include:[UserModel],
+                offset,
+                limit:pageSize
             })
             res.status(200).json(promotions)
         }
