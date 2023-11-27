@@ -5,6 +5,7 @@ import express from "express";
 import dotenv from 'dotenv';
 import cors from 'cors'
 import db from './models/index.js';
+import transactionRouter from "./Routes/transaction.js";
 // import Wallet from "./models/Wallet.js";
 // import Promotion from "./models/promotion.js";
 // import Transaction from "./models/transaction.js";
@@ -15,6 +16,7 @@ dotenv.config();
 const app=express();
 app.use(cors())
 app.use(express.json())
+app.use("/",transactionRouter)
 
 try{
     app.listen(process.env.DB_PORT, () => { 
@@ -23,7 +25,7 @@ try{
 
         await db.sequelize.authenticate();
         console.log('Connection has been established successfully.');
-        await db.sequelize.sync({alter: true});
+        // await db.sequelize.sync({alter: true});
         console.log('Database synced!');
     } catch(error) { 
         console.error(error)

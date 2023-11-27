@@ -20,9 +20,7 @@ const sequelize = new Sequelize(
     }
 );
 
-// const BookModel = Book(sequelize, Sequelize);
-// const CategoryModel = Category(sequelize, Sequelize);
-// const AuthorModel = Author(sequelize, Sequelize);
+
 
 const UserModel = User(sequelize, Sequelize);  
 const TransactionModel = Transaction(sequelize, Sequelize);  
@@ -30,14 +28,6 @@ const NotificationModel =Notification(sequelize,Sequelize)
 const WalletModel=Wallet(sequelize,Sequelize)
 const PromotionModel=Promotion(sequelize,Sequelize)
 
-// const db = {
-//   sequelize,
-//   Sequelize,
-//   BookModel,
-//   CategoryModel,
-//   AuthorModel,
-  
-// };
 
 const db = {
   sequelize,
