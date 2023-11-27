@@ -5,6 +5,8 @@ import express from "express";
 import dotenv from 'dotenv';
 import cors from 'cors'
 import db from './models/index.js';
+import userRouter from './routes/user.route.js'
+import authRouter from './routes/auth.route.js'
 // import Wallet from "./models/Wallet.js";
 // import Promotion from "./models/promotion.js";
 // import Transaction from "./models/transaction.js";
@@ -18,12 +20,16 @@ app.use(express.json())
 
 try{
     app.listen(process.env.PORT, () => { 
-        console.log(`Server is running on port ${process.env.DB_PORT}`)
+        console.log(`Server is running on port ${process.env.PORT}`)
         })
         await db.sequelize.authenticate();
         console.log('Connection has been established successfully.');
-        await db.sequelize.sync({alter: true});
+        // await db.sequelize.sync({alter: true});
         console.log('Database synced!');
     } catch { 
         console.error('Error starting server')
     }
+
+
+    app.use('/user', userRouter);
+    app.use('/auth', authRouter);
