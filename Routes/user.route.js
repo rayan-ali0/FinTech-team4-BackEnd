@@ -1,5 +1,5 @@
 import express from "express";
-import { test, updateUser, deleteUser, updateUserPic } from "../controllers/user.controller.js";
+import { test, updateUser, deleteUser, updateUserPic } from "../Controllers/user.controller.js";
 import { verifyRole, verifyToken } from "../utils/verifyToken.js";
 import upload from "../utils/multer.js";
 // import {verifyUserType} from '../utils/verifyUserType.js'

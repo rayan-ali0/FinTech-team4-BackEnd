@@ -1,4 +1,4 @@
-import { getTransactions, getTransactionByIdUser, createTransaction , updateTransaction, getLastTransactions} from "../controllers/Transaction.js";
+import { getTransactions, getTransactionByIdUser, createTransaction , updateTransaction, getLastTransactions} from "../Controllers/Transaction.js";
 import  express  from "express";
 
  const transactionRouter= express.Router()

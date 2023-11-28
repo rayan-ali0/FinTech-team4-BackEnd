@@ -3,15 +3,15 @@ import dotenv from 'dotenv';
 import cors from 'cors'
 import db from './models/index.js';
 import transactionRouter from "./Routes/transaction.js";
-import userRouter from './routes/user.route.js'
-import authRouter from './routes/auth.route.js'
+import userRouter from './Routes/user.route.js'
+import authRouter from './Routes/auth.route.js'
 // import Wallet from "./models/Wallet.js";
 // import Promotion from "./models/promotion.js";
 // import Transaction from "./models/transaction.js";
 // import setupAssociations from './associations.js'
 
-import {promotionRoutes} from './route/promotionRoutes.js'
-import {walletRoutes} from './route/walletRoutes.js'
+import {promotionRoutes} from './Routes/promotionRoutes.js'
+import {walletRoutes} from './Routes/walletRoutes.js'
 dotenv.config();
 
 const app=express();
