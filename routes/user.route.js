@@ -7,10 +7,9 @@ import upload from "../utils/multer.js";
 const router = express.Router();
 
 router.get("/test",test);
-// router.post("/update/:id", verifyToken, updateUser);
-// router.delete("/delete/:id", verifyToken, deleteUser);
+
 router.post("/update/:id",verifyToken,verifyRole(["admin", "user"]),  updateUser);
-router.patch("/update/pic/:id", upload.single("profile"),updateUserPic);
-router.delete("/delete/:id", deleteUser);
+router.patch("/update/pic/:id", verifyToken, upload.single("profile"),updateUserPic);
+router.delete("/delete/:id",verifyToken, deleteUser);
 
 export default router;

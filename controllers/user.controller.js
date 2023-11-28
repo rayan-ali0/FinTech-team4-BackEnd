@@ -60,6 +60,11 @@ export const updateUserPic = async (req,res, next) =>{
     const newImage = req.file;
     const oldImagePath = user.pic;
 
+    console.log("");
+    console.log(oldImagePath);
+    console.log("");
+
+
 
     if(!newImage){
         return errorHandler(400, "Error Uploading Image");
@@ -67,7 +72,7 @@ export const updateUserPic = async (req,res, next) =>{
 
      user.pic = newImage.path ;
 
-    if(oldImagePath != null){
+    if(oldImagePath !== null && fs.existsSync(oldImagePath) && oldImagePath !== 'images/default.jpg'){
         fs.unlink(oldImagePath, (err)=>{
             if(err) throw err;
         })
@@ -85,7 +90,7 @@ export const updateUserPic = async (req,res, next) =>{
 
 export const deleteUser = async (req,res) =>{
     // if(req.user.id !== req.params.id) return next(errorHandler(401, 'You can only delete your account!'));
-    const userId = req.body.id;
+    const userId = req.params.id;
     
 
     try{

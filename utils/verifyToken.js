@@ -20,21 +20,24 @@ export const verifyToken = (req,res,next)=>{
 next()}
 
 
-export const verifyRole = (req,res,next)=>{
-    // const token = req.headers.authorization?.split(" ")[1];
-  
-    
+export const verifyRole = (array)=>{
+    return (req,res,next)=>{
+        if(array.includes(req.role)){
+            next();
+        }
+        else {
+            return errorHandler(403,'You are not authorized!');
+        }
+    }
+}
    
-    // if(!token) {
-    //     return errorHandler(401, 'No provided token');  
-    // }
 
-   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-   if(!decoded){
-    return errorHandler(401, 'Unauthorized');  
+//    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//    if(!decoded){
+//     return errorHandler(401, 'Unauthorized');  
 
-   }
-   req.userId = decoded.userId
-   req.role = decoded.role
-next()}
+//    }
+//    req.userId = decoded.userId
+//    req.role = decoded.role
+// next()}
 
