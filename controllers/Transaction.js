@@ -9,6 +9,7 @@ import transaction from '../models/transaction.js';
 const {TransactionModel,UserModel, WalletModel, NotificationModel}=db
 // Get all transactions with pagination
 export const getTransactions = async (req, res) => {
+   
    const { page , pageSize = 10 } = req.query;
    const offset = (page - 1) * pageSize;
 

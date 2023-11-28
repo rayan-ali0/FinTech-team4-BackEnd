@@ -12,7 +12,8 @@ export const test = (req, res)=>{
 };
 
 export const updateUser = async (req,res, next) =>{
-    // if(req.user.id !== req.params.id) return next(errorHandler(401, "You can only update your own account!"));
+    if(req.role!== 'admin' && req.userId !== req.params.id ) return next(errorHandler(401, "You can only update your own profile!"));
+
     const userId = req.params.id;
     
 
@@ -46,7 +47,7 @@ export const updateUser = async (req,res, next) =>{
 
 
 export const updateUserPic = async (req,res, next) =>{
-    // if(req.user.id !== req.params.id) return next(errorHandler(401, "You can only update your own profile!"));
+    if(req.role!== 'admin' && req.userId !== req.params.id ) return next(errorHandler(401, "You can only update your own profile!"));
     
     try{
 
@@ -89,7 +90,8 @@ export const updateUserPic = async (req,res, next) =>{
 };
 
 export const deleteUser = async (req,res) =>{
-    // if(req.user.id !== req.params.id) return next(errorHandler(401, 'You can only delete your account!'));
+    if(req.role!== 'admin' && req.userId !== req.params.id ) return next(errorHandler(401, "You can only update your own profile!"));
+
     const userId = req.params.id;
     
 
@@ -98,7 +100,10 @@ export const deleteUser = async (req,res) =>{
     if(!user){
         return res.status(400).send('The user with the given ID was not found');
     }
-    
+    if(user.pic !== 'images/default.jpg' && user.pic!==null){
+        fs.unlink(user.pic);
+    }
+
         await user.destroy();
         res.clearCookie('access_token');
         res.status(200).json('User has been deleted successfully!')

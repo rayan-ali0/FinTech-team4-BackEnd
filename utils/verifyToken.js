@@ -32,12 +32,3 @@ export const verifyRole = (array)=>{
 }
    
 
-//    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//    if(!decoded){
-//     return errorHandler(401, 'Unauthorized');  
-
-//    }
-//    req.userId = decoded.userId
-//    req.role = decoded.role
-// next()}
-
