@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import cors from 'cors'
 import db from './models/index.js';
 import transactionRouter from "./Routes/transaction.js";
+import userRouter from './routes/user.route.js'
+import authRouter from './routes/auth.route.js'
 // import Wallet from "./models/Wallet.js";
 // import Promotion from "./models/promotion.js";
 // import Transaction from "./models/transaction.js";
@@ -33,3 +35,5 @@ try{
 
 app.use('/promotion',promotionRoutes)    
 app.use('/wallet',walletRoutes)    
+app.use('/user', userRouter);
+app.use('/auth', authRouter);
