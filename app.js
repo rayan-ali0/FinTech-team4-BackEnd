@@ -5,13 +5,9 @@ import db from './models/index.js';
 import transactionRouter from "./Routes/transaction.js";
 import userRouter from './Routes/user.route.js'
 import authRouter from './Routes/auth.route.js'
-// import Wallet from "./models/Wallet.js";
-// import Promotion from "./models/promotion.js";
-// import Transaction from "./models/transaction.js";
-// import setupAssociations from './associations.js'
-
 import {promotionRoutes} from './Routes/promotionRoutes.js'
 import {walletRoutes} from './Routes/walletRoutes.js'
+import bodyParser from "body-parser";
 dotenv.config();
 
 const app=express();
@@ -27,7 +23,7 @@ try{
 
         await db.sequelize.authenticate();
         console.log('Connection has been established successfully.');
-        // await db.sequelize.sync({alter: true});
+        await db.sequelize.sync({alter: true});
         console.log('Database synced!');
     } catch(error) { 
         console.error(error)

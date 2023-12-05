@@ -4,9 +4,9 @@
 // import { io } from '../socketServer.js'; 
 import { where ,Op} from 'sequelize';
 import db from '../models/index.js'
-
+import bodyParser from 'body-parser';
 import transaction from '../models/transaction.js';
-const {TransactionModel,UserModel, WalletModel, NotificationModel}=db
+const {TransactionModel,UserModel, WalletModel, NotificationModel,PromotionModel}=db
 // Get all transactions with pagination
 export const getTransactions = async (req, res) => {
    
@@ -60,10 +60,11 @@ export const getLastTransactions= async(req, res)=>{
 
 // Create a new transaction and emit a Socket.IO event
 export const createTransaction = async (req, res) => {
-    const {amountUSD, Datee, type, amountUSDT,buyerId, sellerId}= req.body
+    const {amountUSD, type, amountUSDT,buyerId, sellerId,promotionId}= req.body
    //  const date= new Date(Datee)
     const usdAmount=Number(amountUSD)
     const usdtAmount=Number(amountUSDT)
+    var transactionAmount;
     var status;
    try {
       if(type==="deposit"){
@@ -118,15 +119,23 @@ export const createTransaction = async (req, res) => {
                UserId:buyerId
             }
          })
+        
          const oldSender=Number(senderWallet.usdtBalance)
          const oldReceiver=Number(recieverWallet.usdBalance)
 
-         if(oldSender >=usdtAmount){
+         if(oldSender >=usdtAmount && oldReceiver>usdAmount){
             recieverWallet.usdBalance=oldReceiver-usdAmount
             status="pending"
             await recieverWallet.save()
 
-         }else {
+         }
+         else if(oldReceiver<usdAmount){
+            return res.json({message:"Don't have this amount"})
+
+         }
+         else {
+            console.log(usdtAmount)
+            console.log(usdAmount)
             return res.json({message:"Insuficient funds"})
          }
          
@@ -135,7 +144,7 @@ export const createTransaction = async (req, res) => {
       const date=new Date()
 
       const newTransaction = await TransactionModel.create({
-        amountUSD:usdAmount, status:status, type:type, amountUSDT:usdtAmount, SellerId:sellerId, BuyerId:buyerId
+        amountUSD:usdAmount, status:status, type:type, amountUSDT:usdtAmount, SellerId:sellerId, BuyerId:buyerId,promotionId
       });
       const notification=await NotificationModel.create({description:'A user is asking for  a transaction',date:date,status:'unseen',TransactionId:newTransaction.id})
 
