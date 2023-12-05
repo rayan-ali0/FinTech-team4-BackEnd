@@ -23,7 +23,7 @@ try{
 
         await db.sequelize.authenticate();
         console.log('Connection has been established successfully.');
-        await db.sequelize.sync({alter: true});
+        // await db.sequelize.sync({alter: true});
         console.log('Database synced!');
     } catch(error) { 
         console.error(error)

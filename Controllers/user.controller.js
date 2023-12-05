@@ -111,3 +111,18 @@ export const deleteUser = async (req,res) =>{
         next(error);
     }
 };
+
+export const getUser = async (req,res) =>{
+    const userId = req.params.id;
+    
+    try{
+        const user = await UserModel.findByPk(userId);
+    if(!user){
+        return res.status(400).send('The user with the given ID was not found');
+    }
+
+        res.status(200).json(user)
+    } catch (error) {
+        next(error);
+    }
+};
