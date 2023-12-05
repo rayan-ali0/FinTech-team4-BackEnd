@@ -23,11 +23,11 @@ export default  (sequelize, DataTypes) => {
   }
   Transaction.init({
     // id: DataTypes.INTEGER,
-    amountUSD: DataTypes.DECIMAL,
+    amountUSD: DataTypes.DECIMAL(10,2),
     Date: DataTypes.DATE,
-    status: DataTypes.STRING,
-    type: DataTypes.STRING,
-    amountUSDT: DataTypes.DECIMAL
+    status: DataTypes.ENUM(['accepted','declined','pending']),
+    type: DataTypes.ENUM(['deposit','transfer','transaction']),
+    amountUSDT: DataTypes.DECIMAL(10,2)
   }, {
     sequelize,
     modelName: 'Transaction',

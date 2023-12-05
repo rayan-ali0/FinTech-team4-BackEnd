@@ -37,3 +37,4 @@ app.use('/promotion',promotionRoutes)
 app.use('/wallet',walletRoutes)    
 app.use('/user', userRouter);
 app.use('/auth', authRouter);
+app.use("/",transactionRouter)

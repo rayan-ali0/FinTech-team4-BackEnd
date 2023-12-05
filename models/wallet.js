@@ -13,8 +13,8 @@ export default (sequelize, DataTypes) => {
     }
   }
   Wallet.init({
-    usdBalance: DataTypes.DECIMAL,
-    usdtBalance: DataTypes.DECIMAL,
+    usdBalance: DataTypes.DECIMAL(10,2),
+    usdtBalance: DataTypes.DECIMAL(10,2),
   }, {
     sequelize,
     modelName: 'Wallet',

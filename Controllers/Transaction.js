@@ -45,10 +45,12 @@ export const getLastTransactions= async(req, res)=>{
    const {userId}= req.query;
    try {
       const lastTransactions= await TransactionModel.findAll({where :{
-         SellerId:userId ,
-
+         [Op.or]: [
+            { SellerId: userId },
+            { BuyerId: userId },
+         ],
       }, order:[['createdAt', 'DESC']],
-      limit:4
+      limit:5
    })
    res.status(200).json(lastTransactions)
    } catch (error) {
