@@ -19,6 +19,12 @@ export default  (sequelize, DataTypes) => {
       })
       // define association here
       Transaction.belongsTo(models.UserModel)
+      Transaction.belongsTo(models.PromotionModel,{
+        
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE'
+        
+      })
     }
   }
   Transaction.init({

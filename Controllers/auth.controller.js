@@ -5,7 +5,7 @@ import { errorHandler } from "../utils/error.js";
 import { createUserName } from "../utils/userName.js";
 import jwt from 'jsonwebtoken';
 
-const {UserModel} = db;
+const {UserModel,WalletModel} = db;
 
 export const signup = async (req,res, next)=>{
     const { email, password, name, role} = req.body;
@@ -27,6 +27,8 @@ export const signup = async (req,res, next)=>{
         name, 
         role,
     });
+    await newUser.save()
+    const userWallet=await WalletModel.create({UserId:newUser.id,usdBalance:0.00,usdtBalance:0.00,})
   
         res.status(201).json({message: "user created successfully!"})
     } catch (error) {

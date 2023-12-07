@@ -58,6 +58,24 @@ export const getLastTransactions= async(req, res)=>{
    }
 }
 
+export const getPendingLastTransactions= async(req, res)=>{
+   const {userId}= req.query;
+   try {
+      const lastTransactions= await TransactionModel.findAll({where :{
+         [Op.and]: [
+            { SellerId: userId },
+            { status: "pending" },
+            {type:"transaction"}
+         ],
+      }, order:[['createdAt', 'DESC']],
+      limit:4,
+      include:[{model:PromotionModel}]
+   })
+   res.status(200).json(lastTransactions)
+   } catch (error) {
+      res.status(500).json({error:error.message})
+   }
+}
 // Create a new transaction and emit a Socket.IO event
 export const createTransaction = async (req, res) => {
     const {amountUSD, type, amountUSDT,buyerId, sellerId,promotionId}= req.body

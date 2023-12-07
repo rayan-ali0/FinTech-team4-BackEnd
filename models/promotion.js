@@ -1,6 +1,6 @@
 'use strict';
 
-import { Model } from "sequelize";
+import { Model, Transaction } from "sequelize";
 
 export default (sequelize, DataTypes) => {
   class Promotion extends Model {
@@ -12,6 +12,7 @@ export default (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Promotion.belongsTo(models.UserModel)
+      Promotion.hasMany(models.TransactionModel)
     }
   }
   Promotion.init({
