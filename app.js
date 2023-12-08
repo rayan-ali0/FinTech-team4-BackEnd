@@ -8,6 +8,7 @@ import authRouter from './Routes/auth.route.js'
 import {promotionRoutes} from './Routes/promotionRoutes.js'
 import {walletRoutes} from './Routes/walletRoutes.js'
 import bodyParser from "body-parser";
+import path from "path";
 dotenv.config();
 
 const app=express();
@@ -34,3 +35,4 @@ app.use('/wallet',walletRoutes)
 app.use('/user', userRouter);
 app.use('/auth', authRouter);
 app.use("/",transactionRouter)
+app.use('/images',express.static('images'));
