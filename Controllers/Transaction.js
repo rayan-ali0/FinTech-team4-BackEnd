@@ -50,7 +50,8 @@ export const getLastTransactions= async(req, res)=>{
             { BuyerId: userId },
          ],
       }, order:[['createdAt', 'DESC']],
-      limit:5
+      limit:4,
+      include:[UserModel]
    })
    res.status(200).json(lastTransactions)
    } catch (error) {
