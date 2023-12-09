@@ -27,15 +27,16 @@ export const getTransactions = async (req, res) => {
 };
 
 export const getTransactionByIdUser =async(req,res)=>{
-  const { page =1, pageSize=10,userId}= req.query;
-  const offset =(page -1)* pageSize;
+//   const { page =1, pageSize=10,userId}= req.query;
+//   const offset =(page -1)* pageSize;
+const {userId}=req.query
   try {
    const UserTransactions= await TransactionModel.findAll({where :{[Op.or]: [
       {BuyerId:userId},
       {SellerId:userId}
    ]},
-      offset,
-      limit:pageSize
+      // offset,
+      // limit:pageSize
    })
    res.status(200).json(UserTransactions)
   } catch (error) {
@@ -251,7 +252,7 @@ export const deleteTransaction = async (req, res) => {
 
 
 export const getUserIncome=async (req,res)=>{
-   const {id}=req.params
+   const {id}=req.query
    var role;
    try{
 const user=await UserModel.findOne({where:{id:id}})
@@ -284,7 +285,7 @@ else if(role==="merchant"){
       {
          where:{
          [Op.or]:[
-         {type:'transaction',SellerId:id},
+         {type:'transaction',SellerId:id,status:"accepted"},
          {type:'deposit',BuyerId:id}
          ]
          }
@@ -298,6 +299,73 @@ else if(role==="merchant"){
       }
       else if(transaction.type==="transaction"){
          transactionIncome+=transaction.amountUSD
+      }
+   })
+   res.status(200).json({transactionIncome,depositIncome})
+
+}
+res.status(200).json({transferIncome,depositIncome})
+}
+else{
+   res.json('User not found')   
+}
+}
+   catch(error){
+      res.status(500).json({ error: 'Internal Server Error' });
+
+   }
+}
+
+export const getUserOutcome=async (req,res)=>{
+   const {id}=req.query
+   var role;
+   try{
+const user=await UserModel.findOne({where:{id:id}})
+if(user){
+role=user.role
+if(role==="user"){
+   const transactions=await TransactionModel.findAll(
+      {
+         where:{
+            [Op.or]:[
+            {type:'transaction',BuyerId:id,status:"accepted"},
+            {type:'transfer',SellerId:id}
+            ]
+            }
+      }
+   )
+   let transactionOut=0
+   let transferOut=0
+   transactions.forEach((transaction)=>{
+      if(transaction.type==="transaction"){
+         transactionOut+=Number(transaction.amountUSD)
+      }
+      else if(transaction.type==="transfer"){
+         transferOut+=Number(transaction.amountUSDT)
+      }
+   })
+   res.status(200).json({transactionOut,transferOut})
+
+}
+else if(role==="merchant"){
+   const transactions=await TransactionModel.findAll(
+      {
+         where:{
+         [Op.or]:[
+         {type:'transaction',SellerId:id,status:"accepted"},
+         {type:'transfer',SellerId:id}
+         ]
+         }
+      }
+   )
+   let transactionOut=0
+   let transferOut=0
+   transactions.forEach((transaction)=>{
+      if(transaction.type==="transfer"){
+         transferOut+=Number(transaction.amountUSDT)
+      }
+      else if(transaction.type==="transaction"){
+         transactionOut+=Number(transaction.amountUSDT)
       }
    })
    res.status(200).json({transactionIncome,depositIncome})

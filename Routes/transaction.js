@@ -1,4 +1,4 @@
-import { getTransactions, getTransactionByIdUser, createTransaction , updateTransaction, getLastTransactions,getPendingLastTransactions} from "../Controllers/Transaction.js";
+import { getTransactions, getTransactionByIdUser, createTransaction , updateTransaction, getLastTransactions,getPendingLastTransactions,getUserOutcome,getUserIncome} from "../Controllers/Transaction.js";
 import  express  from "express";
 
  const transactionRouter= express.Router()
@@ -9,4 +9,7 @@ import  express  from "express";
  transactionRouter.post('/create/transaction', createTransaction);
  transactionRouter.put('/update/transaction',updateTransaction)
 transactionRouter.get('/transaction/getlastPending',getPendingLastTransactions)
+transactionRouter.get('/Outcome',getUserOutcome)
+transactionRouter.get('/Income',getUserIncome)
+
  export default transactionRouter

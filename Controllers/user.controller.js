@@ -2,6 +2,7 @@ import db from '../models/index.js'
 import bcryptjs from 'bcryptjs';
 import { errorHandler } from "../utils/error.js";
 import fs from 'fs'
+import {Op} from 'sequelize'
 
 const {UserModel} = db;
 
@@ -126,3 +127,22 @@ export const getUser = async (req,res) =>{
         next(error);
     }
 };
+
+export const getUsers=async(req,res)=>{
+    try{
+const users=await UserModel.findAll({
+    where:{
+    [Op.or]:[
+        {
+            role:"merchant",
+        },{
+            role:"user"
+        }
+    ]
+}})
+res.status(200).json(users)
+    }
+    catch(error){
+        res.json("errorrrrrrrrrrrrrrrrrr"+error.message)
+    }
+}
