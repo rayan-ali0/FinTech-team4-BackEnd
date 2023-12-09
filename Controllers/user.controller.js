@@ -47,7 +47,7 @@ export const updateUser = async (req,res, next) =>{
 
 
 export const updateUserPic = async (req,res, next) =>{
-    if(req.role!== 'admin' && req.userId !== req.params.id ) return next(errorHandler(401, "You can only update your own profile!"));
+    // if(req.role!== 'admin' && req.userId !== req.params.id ) return next(errorHandler(401, "You can only update your own profile!"));
     
     try{
 

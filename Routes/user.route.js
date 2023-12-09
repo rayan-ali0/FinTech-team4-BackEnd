@@ -9,7 +9,8 @@ const router = express.Router();
 router.get("/test",test);
 
 router.put("/update/:id",verifyToken,verifyRole(["admin", "user"]),  updateUser);
-router.patch("/update/pic/:id", verifyToken, upload.single("profile"),updateUserPic);
+// router.patch("/update/pic/:id", verifyToken, upload.single("profile"),updateUserPic);
+router.patch("/update/pic/:id", upload.single("profile"),updateUserPic);
 router.delete("/delete/:id",verifyToken, deleteUser);
 router.get("/read/:id", getUser);
 

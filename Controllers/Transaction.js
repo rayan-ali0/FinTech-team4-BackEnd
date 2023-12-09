@@ -10,19 +10,22 @@ const {TransactionModel,UserModel, WalletModel, NotificationModel,PromotionModel
 // Get all transactions with pagination
 export const getTransactions = async (req, res) => {
    
-   const { page , pageSize = 10 } = req.query;
-   const offset = (page - 1) * pageSize;
+   // const { page , pageSize = 10 } = req.query;
+   // const offset = (page - 1) * pageSize;
 
    try {
-      const transactions = await TransactionModel.findAll({
-         offset,
-         limit: pageSize,
-      });
-      res.json(transactions);
+      // const transactions = await TransactionModel.findAll({
+      //    offset,
+      //    limit: pageSize,
+      // });
+      const transactions = await TransactionModel.findAll();
+     return res.status(200).json(transactions);
    } catch (error) {
-      res.status(500).json({ error: 'Internal Serverrr Error' });
+      console.log(error)
+      res.status(500).json({ error: 'Internal Server Error' });
    }
 };
+
 export const getTransactionByIdUser =async(req,res)=>{
   const { page =1, pageSize=10,userId}= req.query;
   const offset =(page -1)* pageSize;
