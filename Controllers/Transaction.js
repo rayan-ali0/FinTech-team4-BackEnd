@@ -249,3 +249,68 @@ export const deleteTransaction = async (req, res) => {
    }
 };
 
+
+export const getUserIncome=async (req,res)=>{
+   const {id}=req.params
+   var role;
+   try{
+const user=await UserModel.findOne({where:{id:id}})
+if(user){
+role=user.role
+if(role==="user"){
+   const transactions=await TransactionModel.findAll(
+      {
+         where:{
+            BuyerId:id,
+            type:['deposit','transfer']
+         }
+      }
+   )
+   let depositIncome=0
+   let transferIncome=0
+   transactions.forEach((transaction)=>{
+      if(transaction.type==="deposit"){
+         depositIncome+=transaction.amountUSD
+      }
+      else if(transaction.type==="transfer"){
+         transferIncome+=transaction.amountUSDT
+      }
+   })
+   res.status(200).json({transferIncome,depositIncome})
+
+}
+else if(role==="merchant"){
+   const transactions=await TransactionModel.findAll(
+      {
+         where:{
+         [Op.or]:[
+         {type:'transaction',SellerId:id},
+         {type:'deposit',BuyerId:id}
+         ]
+         }
+      }
+   )
+   let depositIncome=0
+   let transactionIncome=0
+   transactions.forEach((transaction)=>{
+      if(transaction.type==="deposit"){
+         depositIncome+=transaction.amountUSD
+      }
+      else if(transaction.type==="transaction"){
+         transactionIncome+=transaction.amountUSD
+      }
+   })
+   res.status(200).json({transactionIncome,depositIncome})
+
+}
+res.status(200).json({transferIncome,depositIncome})
+}
+else{
+   res.json('User not found')   
+}
+}
+   catch(error){
+      res.status(500).json({ error: 'Internal Server Error' });
+
+   }
+}
