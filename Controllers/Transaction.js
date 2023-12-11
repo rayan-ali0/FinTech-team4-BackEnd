@@ -18,7 +18,9 @@ export const getTransactions = async (req, res) => {
       //    offset,
       //    limit: pageSize,
       // });
-      const transactions = await TransactionModel.findAll();
+      const transactions = await TransactionModel.findAll({
+         order:[['createdAt', 'DESC']]
+      });
      return res.status(200).json(transactions);
    } catch (error) {
       console.log(error)
@@ -35,9 +37,12 @@ const {userId}=req.query
       {BuyerId:userId},
       {SellerId:userId}
    ]},
+   order:[['createdAt', 'DESC']],
       // offset,
       // limit:pageSize
+      include:[PromotionModel,UserModel]
    })
+
    res.status(200).json(UserTransactions)
   } catch (error) {
    res.status(500).json({error:error.message})
@@ -271,13 +276,13 @@ if(role==="user"){
    let transferIncome=0
    transactions.forEach((transaction)=>{
       if(transaction.type==="deposit"){
-         depositIncome+=transaction.amountUSD
+         depositIncome+=Number(transaction.amountUSD)
       }
       else if(transaction.type==="transfer"){
-         transferIncome+=transaction.amountUSDT
+         transferIncome+=Number(transaction.amountUSDT)
       }
    })
-   res.status(200).json({transferIncome,depositIncome})
+   return res.status(200).json({transferIncome,depositIncome})
 
 }
 else if(role==="merchant"){
@@ -295,16 +300,16 @@ else if(role==="merchant"){
    let transactionIncome=0
    transactions.forEach((transaction)=>{
       if(transaction.type==="deposit"){
-         depositIncome+=transaction.amountUSD
+         depositIncome+=Number(transaction.amountUSD)
       }
       else if(transaction.type==="transaction"){
-         transactionIncome+=transaction.amountUSD
+         transactionIncome+=Number(transaction.amountUSD)
       }
    })
-   res.status(200).json({transactionIncome,depositIncome})
+   return  res.status(200).json({transactionIncome,depositIncome})
 
 }
-res.status(200).json({transferIncome,depositIncome})
+// res.status(200).json({transferIncome,depositIncome})
 }
 else{
    res.json('User not found')   
@@ -368,10 +373,10 @@ else if(role==="merchant"){
          transactionOut+=Number(transaction.amountUSDT)
       }
    })
-   res.status(200).json({transactionIncome,depositIncome})
+   res.status(200).json({transactionOut,transferOut})
 
 }
-res.status(200).json({transferIncome,depositIncome})
+// res.status(200).json({transferIncome,depositIncome})
 }
 else{
    res.json('User not found')   
@@ -381,4 +386,108 @@ else{
       res.status(500).json({ error: 'Internal Server Error' });
 
    }
+}
+
+
+export const weeklyIncome=async (req,res)=>{
+   const {id}=req.query
+   var role;
+   try{
+const user=await UserModel.findByPk(id)
+if(user){
+if(user.role==="user"){
+   const currentDate = new Date();
+   const startOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay());
+   const endOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay() + 6);
+
+   const transactions=await TransactionModel.findAll(
+      {
+         where:{
+            [Op.and ]:[
+               {
+                  [Op.or]:[
+                     {type:'transaction',BuyerId:id,status:"accepted"},
+                     {type:'transfer',SellerId:id}
+                     ]
+               },
+               {
+                  createdAt:{
+                     [Op.between]:[startOfWeek,endOfWeek]
+                  }
+               }
+              
+               
+            ]
+           
+            }
+      }
+   )
+   let WeeklyIncome=0
+   transactions.forEach((transaction)=>{
+      if(transaction.type==="deposit"){
+         WeeklyIncome+=Number(transaction.amountUSD)
+      }
+      else if(transaction.type==="transfer"){
+         WeeklyIncome+=Number(transaction.amountUSDT)
+      }
+   })
+
+   const startOfPastWeek = new Date(startOfWeek);
+   startOfPastWeek.setDate(startOfWeek.getDate() - 7);
+   const endOfPastWeek = new Date(endOfWeek);
+   endOfPastWeek.setDate(endOfWeek.getDate() - 7);
+   const Pasttransactions=await TransactionModel.findAll(
+      {
+         where:{
+            [Op.and ]:[
+               {
+                  [Op.or]:[
+                     {type:'transaction',BuyerId:id,status:"accepted"},
+                     {type:'transfer',SellerId:id}
+                     ]
+               },
+               {
+                  createdAt:{
+                     [Op.between]:[startOfPastWeek,endOfPastWeek]
+                  }
+               }
+              
+               
+            ]
+           
+            }
+      }
+   )
+   let pastIncome=0
+   Pasttransactions.forEach((transaction)=>{
+      if(transaction.type==="deposit"){
+         pastIncome+=Number(transaction.amountUSD)
+      }
+      else if(transaction.type==="transfer"){
+         pastIncome+=Number(transaction.amountUSDT)
+      }
+   })
+   const percentageDifference =( (Number(WeeklyIncome) - Number(pastIncome) )/ (Number(pastIncome)+100) * 100).toFixed(2);
+
+   return res.status(200).json({
+      WeeklyIncome,
+     pastIncome,
+     percentageDifference,
+   });
+
+}
+if(user.role==="merchant"){
+
+}
+}
+else{
+   res.json('user not found')
+}
+
+   }
+   catch(error){
+      res.status(500).json({ error: 'Internal Server Error' });
+   }
+
+
 }

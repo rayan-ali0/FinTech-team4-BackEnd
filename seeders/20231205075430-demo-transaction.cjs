@@ -12,8 +12,7 @@ module.exports = {
       amountUSDT:faker.finance.amount(50,700,2),
       createdAt: new Date(),
       updatedAt: new Date(),
-      // type:faker.helpers.arrayElement(['deposit','withdraw','transfer']),
-      status:faker.helpers.arrayElement(['accepted','declined','pending']),
+      status:faker.helpers.arrayElement(['accepted','declined','accepted']),
 
 
     }))
