@@ -405,6 +405,190 @@ if(user.role==="user"){
          where:{
             [Op.and ]:[
                {
+                  BuyerId:id,
+                  type:['deposit','transfer']
+               },
+               {
+                  createdAt:{
+                     [Op.between]:[startOfWeek,endOfWeek]
+                  }
+               }
+              
+               
+            ]
+           
+            }
+      }
+   )
+   let WeeklyIncome=0
+   transactions.forEach((transaction)=>{
+      if(transaction.type==="deposit"){
+         WeeklyIncome+=Number(transaction.amountUSD)
+      }
+      else if(transaction.type==="transfer"){
+         WeeklyIncome+=Number(transaction.amountUSDT)
+      }
+   })
+
+   const startOfPastWeek = new Date(startOfWeek);
+   startOfPastWeek.setDate(startOfWeek.getDate() - 7);
+   const endOfPastWeek = new Date(endOfWeek);
+   endOfPastWeek.setDate(endOfWeek.getDate() - 7);
+   const Pasttransactions=await TransactionModel.findAll(
+      {
+         where:{
+            [Op.and ]:[
+               {
+               
+                     BuyerId:id,
+                     type:['deposit','transfer']
+               
+               },
+               {
+                  createdAt:{
+                     [Op.between]:[startOfPastWeek,endOfPastWeek]
+                  }
+               }
+              
+               
+            ]
+           
+            }
+      }
+   )
+   let pastIncome=0
+   Pasttransactions.forEach((transaction)=>{
+      if(transaction.type==="deposit"){
+         pastIncome+=Number(transaction.amountUSD)
+      }
+      else if(transaction.type==="transfer"){
+         pastIncome+=Number(transaction.amountUSDT)
+      }
+   })
+   const percentageDifference =( (Number(WeeklyIncome) - Number(pastIncome) )/ (Number(pastIncome)+100) * 100).toFixed(0);
+
+   return res.status(200).json({
+      WeeklyIncome,
+     pastIncome,
+     percentageDifference,
+   });
+
+}
+if(user.role==="merchant"){
+
+
+   const currentDate = new Date();
+   const startOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay());
+   const endOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay() + 6);
+
+   const transactions=await TransactionModel.findAll(
+      {
+         where:{
+            [Op.and ]:[
+               {
+                  [Op.or]:[
+                     {type:'transaction',SellerId:id,status:"accepted"},
+                     {type:'deposit',BuyerId:id}
+                     ]
+               },
+               {
+                  createdAt:{
+                     [Op.between]:[startOfWeek,endOfWeek]
+                  }
+               }
+              
+               
+            ]
+           
+            }
+      }
+   )
+   let WeeklyIncome=0
+   transactions.forEach((transaction)=>{
+      if(transaction.type==="transaction"){
+         WeeklyIncome+=Number(transaction.amountUSD)
+      }
+      else if(transaction.type==="deposit"){
+         WeeklyIncome+=Number(transaction.amountUSD)
+      }
+   })
+
+   const startOfPastWeek = new Date(startOfWeek);
+   startOfPastWeek.setDate(startOfWeek.getDate() - 7);
+   const endOfPastWeek = new Date(endOfWeek);
+   endOfPastWeek.setDate(endOfWeek.getDate() - 7);
+   const Pasttransactions=await TransactionModel.findAll(
+      {
+         where:{
+            [Op.and ]:[
+               {
+                  [Op.or]:[
+                     {type:'transaction',SellerId:id,status:"accepted"},
+                     {type:'deposit',BuyerId:id}
+                     ]
+               },
+               {
+                  createdAt:{
+                     [Op.between]:[startOfPastWeek,endOfPastWeek]
+                  }
+               }
+              
+               
+            ]
+           
+            }
+      }
+   )
+   let pastIncome=0
+   Pasttransactions.forEach((transaction)=>{
+      if(transaction.type==="transaction"){
+         pastIncome+=Number(transaction.amountUSD)
+      }
+      else if(transaction.type==="deposit"){
+         pastIncome+=Number(transaction.amountUSD)
+      }
+   })
+   const percentageDifference =( (Number(WeeklyIncome) - Number(pastIncome) )/ (Number(pastIncome)+100) * 100).toFixed(0);
+
+   return res.status(200).json({
+      WeeklyIncome,
+     pastIncome,
+     percentageDifference,
+   });
+
+
+
+}
+}
+else{
+   res.json('user not found')
+}
+
+   }
+   catch(error){
+      res.status(500).json({ error: 'Internal Server Error'+error.message });
+   }
+
+
+}
+
+/************************************************/
+export const weeklyOutcome=async (req,res)=>{
+   const {id}=req.query
+   var role;
+   try{
+const user=await UserModel.findByPk(id)
+if(user){
+if(user.role==="user"){
+   const currentDate = new Date();
+   const startOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay());
+   const endOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay() + 6);
+
+   const transactions=await TransactionModel.findAll(
+      {
+         where:{
+            [Op.and ]:[
+               {
                   [Op.or]:[
                      {type:'transaction',BuyerId:id,status:"accepted"},
                      {type:'transfer',SellerId:id}
@@ -460,14 +644,14 @@ if(user.role==="user"){
    )
    let pastIncome=0
    Pasttransactions.forEach((transaction)=>{
-      if(transaction.type==="deposit"){
+      if(transaction.type==="transaction"){
          pastIncome+=Number(transaction.amountUSD)
       }
       else if(transaction.type==="transfer"){
          pastIncome+=Number(transaction.amountUSDT)
       }
    })
-   const percentageDifference =( (Number(WeeklyIncome) - Number(pastIncome) )/ (Number(pastIncome)+100) * 100).toFixed(2);
+   const percentageDifference =( (Number(WeeklyIncome) - Number(pastIncome) )/ (Number(pastIncome)+100) * 100).toFixed(0);
 
    return res.status(200).json({
       WeeklyIncome,
@@ -478,6 +662,88 @@ if(user.role==="user"){
 }
 if(user.role==="merchant"){
 
+
+   const currentDate = new Date();
+   const startOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay());
+   const endOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay() + 6);
+
+   const transactions=await TransactionModel.findAll(
+      {
+         where:{
+            [Op.and ]:[
+               {
+                  [Op.or]:[
+                     {type:'transaction',SellerId:id,status:"accepted"},
+                     {type:'transfer',SellerId:id}
+                     ]
+               },
+               {
+                  createdAt:{
+                     [Op.between]:[startOfWeek,endOfWeek]
+                  }
+               }
+              
+               
+            ]
+           
+            }
+      }
+   )
+   let WeeklyIncome=0
+   transactions.forEach((transaction)=>{
+      if(transaction.type==="transaction"){
+         WeeklyIncome+=Number(transaction.amountUSDT)
+      }
+      else if(transaction.type==="transfer"){
+         WeeklyIncome+=Number(transaction.amountUSDT)
+      }
+   })
+
+   const startOfPastWeek = new Date(startOfWeek);
+   startOfPastWeek.setDate(startOfWeek.getDate() - 7);
+   const endOfPastWeek = new Date(endOfWeek);
+   endOfPastWeek.setDate(endOfWeek.getDate() - 7);
+   const Pasttransactions=await TransactionModel.findAll(
+      {
+         where:{
+            [Op.and ]:[
+               {
+                  [Op.or]:[
+                     {type:'transaction',SellerId:id,status:"accepted"},
+                     {type:'transfer',SellerId:id}
+                     ]
+               },
+               {
+                  createdAt:{
+                     [Op.between]:[startOfPastWeek,endOfPastWeek]
+                  }
+               }
+              
+               
+            ]
+           
+            }
+      }
+   )
+   let pastIncome=0
+   Pasttransactions.forEach((transaction)=>{
+      if(transaction.type==="transaction"){
+         pastIncome+=Number(transaction.amountUSDT)
+      }
+      else if(transaction.type==="transfer"){
+         pastIncome+=Number(transaction.amountUSDT)
+      }
+   })
+   const percentageDifference =( (Number(WeeklyIncome) - Number(pastIncome) )/ (Number(pastIncome)+100) * 100).toFixed(0);
+
+   return res.status(200).json({
+      WeeklyIncome,
+     pastIncome,
+     percentageDifference,
+   });
+
+
+
 }
 }
 else{
@@ -486,8 +752,147 @@ else{
 
    }
    catch(error){
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ error: 'Internal Server Error'+error.message });
    }
 
 
 }
+
+
+
+
+
+/**************************** OUT COME FOR THE LAST 4 WEEKS*********************************** */
+
+
+
+export const getUserIncomeFourWeeks = async (req, res) => {
+  const { id } = req.query;
+  console.log("iddddddddddd"+id)
+  var role;
+
+  try {
+   //  const user = await UserModel.findOne({ where: { id: id } });
+   const user=await UserModel.findByPk(id)
+
+
+    if (user) {
+      role = user.role;
+
+      // if (role === "merchant") {
+        // Get the current date
+        const currentDate = new Date();
+
+        // Calculate the start and end dates for the current week
+        const currentWeekStart = new Date(currentDate);
+        currentWeekStart.setHours(0, 0, 0, 0);
+        currentWeekStart.setDate(currentDate.getDate() - currentDate.getDay()); // Set to the first day of the week (Sunday)
+
+        const currentWeekEnd = new Date(currentWeekStart);
+        currentWeekEnd.setDate(currentWeekStart.getDate() + 6); // Set to the last day of the week (Saturday)
+
+        // Calculate the start and end dates for the previous three weeks
+        const threeWeeksAgo = new Date(currentWeekStart);
+        threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
+
+        const twoWeeksAgo = new Date(threeWeeksAgo);
+        twoWeeksAgo.setDate(twoWeeksAgo.getDate() + 13);
+
+        const oneWeekAgo = new Date(twoWeeksAgo);
+        oneWeekAgo.setDate(oneWeekAgo.getDate() + 7);
+
+        // Fetch transactions for each week
+        const currentWeekTransactions = await getTransactionsForWeek(id, currentWeekStart, currentWeekEnd,role);
+        const threeWeeksAgoTransactions = await getTransactionsForWeek(id, threeWeeksAgo, twoWeeksAgo,role);
+        const twoWeeksAgoTransactions = await getTransactionsForWeek(id, twoWeeksAgo, oneWeekAgo,role);
+        const oneWeekAgoTransactions = await getTransactionsForWeek(id, oneWeekAgo, currentDate,role);
+
+        // Calculate income for each week
+        const currentWeekIncome = calculateIncome(currentWeekTransactions,role);
+        const threeWeeksAgoIncome = calculateIncome(threeWeeksAgoTransactions,role);
+        const twoWeeksAgoIncome = calculateIncome(twoWeeksAgoTransactions,role);
+        const oneWeekAgoIncome = calculateIncome(oneWeekAgoTransactions,role);
+
+        return res.status(200).json({
+          currentWeekIncome,
+          threeWeeksAgoIncome,
+          twoWeeksAgoIncome,
+          oneWeekAgoIncome,
+        });
+      // }
+    }
+
+    return res.status(404).json({ error: "User not found" });
+  } catch (error) {
+    console.error('Error fetching user income:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// Helper function to get transactions for a specific week
+const getTransactionsForWeek = async (userId, startDate, endDate,role) => {
+   if(role==="merchant"){
+      return TransactionModel.findAll({
+         where: {
+           [Op.and]:[
+          { 
+           [Op.or]:[
+              {type:'transaction',SellerId:userId,status:"accepted"},
+              {type:'deposit',BuyerId:userId}
+           ],
+           createdAt: {
+             [Op.between]: [startDate, endDate],
+           },
+        }
+     
+         ]
+          
+         },
+       });
+   }
+   else if(role==="user"){
+      return TransactionModel.findAll({
+         where: {
+           [Op.and]:[
+          {
+             BuyerId:userId,
+            type:['deposit','transfer']
+         ,
+           createdAt: {
+             [Op.between]: [startDate, endDate],
+           },
+        }
+     
+         ]
+          
+         },
+       });
+   }
+ 
+};
+
+// Helper function to calculate income from transactions
+const calculateIncome = (transactions,role) => {
+  let totalIncome = 0;
+if(role==="merchant"){
+   transactions.forEach((transaction) => {
+      if (transaction.type === "transaction") {
+        totalIncome += Number(transaction.amountUSD);
+      } else if (transaction.type === "deposit") {
+        totalIncome += Number(transaction.amountUSD);
+      }
+    });
+}
+else if(role==="user"){
+   transactions.forEach((transaction) => {
+      if (transaction.type === "deposit") {
+        totalIncome += Number(transaction.amountUSD);
+      } else if (transaction.type === "transfer") {
+        totalIncome += Number(transaction.amountUSDT);
+      }
+    });
+}
+ 
+
+  return totalIncome ;
+};
